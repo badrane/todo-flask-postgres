@@ -9,7 +9,7 @@
         env:
           POSTGRESQL_PASSWORD: 'password'
         ports:
-          - "5432:5432"
+          - "6432:5432"
       register: db_cont_metadata
     - name: Get infos on container
       docker_container_info:
@@ -25,9 +25,9 @@
       wait_for:
         host: "{{ result.container.NetworkSettings.IPAddress }}"
         port: 5432
-        state: 'drained'
+        state: 'drained' # will check for active connection
         connect_timeout: 1
-        timeout: 30
+        timeout: 30  # maximum number of seconds to wait for
       register: postgresql_running
       until: postgresql_running is success
       retries: 10
@@ -42,7 +42,7 @@
       register: result
     - name: Return value
       debug:
-        var: result
-        verbosity: 2
+        msg: " {{ result.stdout }}"
+
 
 
